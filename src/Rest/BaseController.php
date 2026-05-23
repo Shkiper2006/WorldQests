@@ -22,7 +22,7 @@ abstract class BaseController
         return new WP_Error('worldquest_forbidden', __('You do not have permissions to perform this action.', 'worldquest'), ['status' => 403]);
     }
 
-    protected function enforceNonce(WP_REST_Request $request): true|WP_Error
+    protected function enforceNonce(WP_REST_Request $request): bool|WP_Error
     {
         if (wp_doing_ajax() || is_admin()) {
             $nonce = (string) ($request->get_header('x_wp_nonce') ?: $request->get_param('_wpnonce'));
@@ -39,7 +39,7 @@ abstract class BaseController
         return in_array((string) $value, ['draft', 'published', 'archived', 'pending_moderation'], true);
     }
 
-    protected function enforceHoneypot(WP_REST_Request $request, string $field = 'website'): true|WP_Error
+    protected function enforceHoneypot(WP_REST_Request $request, string $field = 'website'): bool|WP_Error
     {
         if (trim((string) $request->get_param($field)) !== '') {
             return new WP_Error('worldquest_spam_detected', __('Spam detected.', 'worldquest'), ['status' => 400]);
@@ -48,7 +48,7 @@ abstract class BaseController
         return true;
     }
 
-    protected function enforceRateLimit(WP_REST_Request $request, string $action): true|WP_Error
+    protected function enforceRateLimit(WP_REST_Request $request, string $action): bool|WP_Error
     {
         $ip = (string) ($_SERVER['REMOTE_ADDR'] ?? 'unknown');
         $token = sanitize_key((string) ($request->get_header('x-worldquest-token') ?: $request->get_param('token') ?: 'anon'));
@@ -62,7 +62,7 @@ abstract class BaseController
         return true;
     }
 
-    protected function verifyRecaptcha(WP_REST_Request $request): true|WP_Error
+    protected function verifyRecaptcha(WP_REST_Request $request): bool|WP_Error
     {
         $settings = get_option('world_quest_security', []);
         $secret = (string) ($settings['recaptcha_secret'] ?? '');
@@ -95,7 +95,7 @@ abstract class BaseController
         return true;
     }
 
-    protected function validateUploadedFile(array $file): true|WP_Error
+    protected function validateUploadedFile(array $file): bool|WP_Error
     {
         $allowed = [
             'jpg|jpeg|jpe' => 'image/jpeg',
