@@ -42,7 +42,7 @@ if (file_exists($autoloadPath)) {
 if (!class_exists(WorldQuest\Plugin::class)) {
     add_action('admin_notices', static function (): void {
         echo '<div class="notice notice-error"><p>'
-            . esc_html__('World Quest failed to load classes. Please check plugin files or run Composer autoload generation.', 'worldquest')
+            . esc_html__('World Quest failed to load classes. Please check plugin files.', 'worldquest')
             . '</p></div>';
     });
 
@@ -50,7 +50,6 @@ if (!class_exists(WorldQuest\Plugin::class)) {
 }
 
 register_activation_hook(__FILE__, ['WorldQuest\\Migrations\\Installer', 'activate']);
-add_action('plugins_loaded', ['WorldQuest\\Migrations\\Installer', 'activate']);
 add_action('plugins_loaded', static function (): void {
     load_plugin_textdomain('worldquest', false, dirname(plugin_basename(__FILE__)) . '/languages');
 });
