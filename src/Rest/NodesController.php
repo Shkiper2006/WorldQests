@@ -42,7 +42,7 @@ final class NodesController extends BaseController
         $id = (int) $request['id'];
         if (!$this->exists($id)) return $this->notFound('Node', $id);
         $ok = $this->wpdb->delete($this->table, ['id' => $id], ['%d']);
-        if ($ok === false) return new WP_Error('worldquest_db_error', __('Failed to delete node.', 'world-quest'), ['status' => 500]);
+        if ($ok === false) return new WP_Error('worldquest_db_error', __('Failed to delete node.', 'worldquest'), ['status' => 500]);
         return new WP_REST_Response(['deleted' => true]);
     }
 
@@ -58,9 +58,9 @@ final class NodesController extends BaseController
         $status = sanitize_key((string) ($request->get_param('status') ?: 'draft'));
         $sortOrder = (int) $request->get_param('sort_order');
 
-        if ($questId <= 0) return $this->validationError('quest_id', __('quest_id must be greater than 0.', 'world-quest'));
-        if ($nodeCode === '') return $this->validationError('node_code', __('node_code is required.', 'world-quest'));
-        if (!$this->validateStatus($status)) return $this->validationError('status', __('Invalid status.', 'world-quest'));
+        if ($questId <= 0) return $this->validationError('quest_id', __('quest_id must be greater than 0.', 'worldquest'));
+        if ($nodeCode === '') return $this->validationError('node_code', __('node_code is required.', 'worldquest'));
+        if (!$this->validateStatus($status)) return $this->validationError('status', __('Invalid status.', 'worldquest'));
 
         $data = ['quest_id' => $questId, 'node_code' => $nodeCode, 'content' => $content, 'status' => $status, 'sort_order' => $sortOrder];
         $formats = ['%d', '%s', '%s', '%s', '%d'];
@@ -69,7 +69,7 @@ final class NodesController extends BaseController
             ? $this->wpdb->insert($this->table, $data, $formats)
             : $this->wpdb->update($this->table, $data, ['id' => $id], $formats, ['%d']);
 
-        if ($ok === false) return new WP_Error('worldquest_db_error', __('Failed to persist node.', 'world-quest'), ['status' => 500]);
+        if ($ok === false) return new WP_Error('worldquest_db_error', __('Failed to persist node.', 'worldquest'), ['status' => 500]);
 
         return new WP_REST_Response($id === null ? ['id' => (int) $this->wpdb->insert_id] : ['updated' => true], $id === null ? 201 : 200);
     }
@@ -84,8 +84,8 @@ final class NodesController extends BaseController
         $nodeCode = sanitize_text_field((string) $request->get_param('node_code'));
         $content = wp_kses_post((string) $request->get_param('content'));
         $sortOrder = (int) $request->get_param('sort_order');
-        if ($questId <= 0) return $this->validationError('quest_id', __('quest_id must be greater than 0.', 'world-quest'));
-        if ($nodeCode === '') return $this->validationError('node_code', __('node_code is required.', 'world-quest'));
+        if ($questId <= 0) return $this->validationError('quest_id', __('quest_id must be greater than 0.', 'worldquest'));
+        if ($nodeCode === '') return $this->validationError('node_code', __('node_code is required.', 'worldquest'));
 
         $files = $request->get_file_params();
         if (isset($files['attachment']) && is_array($files['attachment'])) {
@@ -94,7 +94,7 @@ final class NodesController extends BaseController
         }
 
         $ok = $this->wpdb->insert($this->table, ['quest_id' => $questId, 'node_code' => $nodeCode, 'content' => $content, 'status' => 'pending_moderation', 'sort_order' => $sortOrder], ['%d', '%s', '%s', '%s', '%d']);
-        if ($ok === false) return new WP_Error('worldquest_db_error', __('Failed to persist node.', 'world-quest'), ['status' => 500]);
+        if ($ok === false) return new WP_Error('worldquest_db_error', __('Failed to persist node.', 'worldquest'), ['status' => 500]);
 
         return new WP_REST_Response(['id' => (int) $this->wpdb->insert_id, 'status' => 'pending_moderation'], 201);
     }

@@ -7,7 +7,7 @@
  * Requires at least: 6.4
  * Requires PHP: 8.1
  * Author:      World Quest Team
- * Text Domain: world-quest
+ * Text Domain: worldquest
  * Domain Path: /languages
  */
 
@@ -17,6 +17,9 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 register_activation_hook(__FILE__, ['WorldQuest\\Migrations\\Installer', 'activate']);
 add_action('plugins_loaded', ['WorldQuest\\Migrations\\Installer', 'activate']);
+add_action('plugins_loaded', static function (): void {
+    load_plugin_textdomain('worldquest', false, dirname(plugin_basename(__FILE__)) . '/languages');
+});
 
 $plugin = new WorldQuest\Plugin(__FILE__);
 $plugin->boot();
