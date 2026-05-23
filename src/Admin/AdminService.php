@@ -4,24 +4,28 @@ declare(strict_types=1);
 
 namespace WorldQuest\Admin;
 
+use wpdb;
+
 final class AdminService
 {
-    private Menu $menu;
+    private ?Menu $menu = null;
 
     public function __construct(private readonly string $pluginFile)
     {
         global $wpdb;
-        $this->menu = new Menu($pluginFile, $wpdb);
+        if ($wpdb instanceof wpdb) {
+            $this->menu = new Menu($pluginFile, $wpdb);
+        }
     }
 
     public function registerMenu(): void
     {
-        $this->menu->register();
+        $this->menu?->register();
     }
 
     public function registerSettings(): void
     {
-        $this->menu->registerSettings();
+        $this->menu?->registerSettings();
     }
 
     public function enqueueBlockEditorAssets(): void
