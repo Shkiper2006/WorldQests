@@ -6,6 +6,7 @@
   const content = root.querySelector('[data-node-content]');
   const media = root.querySelector('[data-node-media]');
   const choicesWrap = root.querySelector('[data-node-choices]');
+  const form = root.querySelector('[data-worldquest-public-node-form]');
   const nodesByCode = Object.fromEntries(data.nodes.map((n) => [n.node_code, n]));
   const nodesById = Object.fromEntries(data.nodes.map((n) => [String(n.id), n]));
   const choicesByParent = {};
@@ -35,13 +36,7 @@
 
     const choices = (choicesByParent[String(node.id)] || []).slice(0, 6);
     choicesWrap.innerHTML = '';
-    if (!choices.length) {
-      const cta = document.createElement('a');
-      cta.href = '#';
-      cta.textContent = data.ctaLabel;
-      choicesWrap.appendChild(cta);
-      return;
-    }
+    if (!choices.length) return;
 
     choices.forEach((choice) => {
       const btn = document.createElement('button');
@@ -54,6 +49,17 @@
       choicesWrap.appendChild(btn);
     });
   };
+
+  if (form) {
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const fd = new FormData(form);
+      fd.set('quest_id', String(data.questId));
+      const req = await fetch(`${data.restUrl}/public/nodes`, { method: 'POST', body: fd });
+      const message = form.querySelector('[data-worldquest-form-message]');
+      message.textContent = req.ok ? 'Отправлено на модерацию.' : 'Ошибка отправки.';
+    });
+  }
 
   renderNode(data.nodes[0]);
 })();

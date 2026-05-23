@@ -43,6 +43,21 @@ final class QuestsController extends BaseController
         return new WP_REST_Response(['id' => (int) $this->wpdb->insert_id], 201);
     }
 
+    public function createPublic(WP_REST_Request $request): WP_REST_Response|WP_Error
+    {
+        foreach ([$this->enforceHoneypot($request), $this->enforceRateLimit($request, 'quest_create'), $this->verifyRecaptcha($request)] as $check) {
+            if ($check instanceof WP_Error) return $check;
+        }
+
+        $title = sanitize_text_field((string) $request->get_param('title'));
+        $slug = sanitize_title((string) ($request->get_param('slug') ?: $title));
+        if ($title === '') return $this->validationError('title', __('Title is required.', 'world-quest'));
+
+        $ok = $this->wpdb->insert($this->table, ['title' => $title, 'slug' => $slug, 'status' => 'pending_moderation'], ['%s', '%s', '%s']);
+        if ($ok === false) return new WP_Error('worldquest_db_error', __('Failed to create quest.', 'world-quest'), ['status' => 500]);
+        return new WP_REST_Response(['id' => (int) $this->wpdb->insert_id, 'status' => 'pending_moderation'], 201);
+    }
+
     public function update(WP_REST_Request $request): WP_REST_Response|WP_Error
     {
         $nonceCheck = $this->enforceNonce($request);

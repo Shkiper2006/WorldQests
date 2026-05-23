@@ -85,6 +85,8 @@ final class Shortcodes
             'nodes' => $nodes,
             'choices' => $choices,
             'ctaLabel' => __('Добавить свой вариант развития событий', 'world-quest'),
+            'restUrl' => esc_url_raw(rest_url('worldquest/v1')),
+            'recaptchaSiteKey' => (string) (get_option('world_quest_security', [])['recaptcha_site_key'] ?? ''),
         ]) . ';', 'before');
 
         ob_start();

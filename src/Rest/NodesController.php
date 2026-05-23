@@ -32,6 +32,7 @@ final class NodesController extends BaseController
     }
 
     public function create(WP_REST_Request $request): WP_REST_Response|WP_Error { return $this->save($request); }
+    public function createPublic(WP_REST_Request $request): WP_REST_Response|WP_Error { return $this->savePublic($request); }
     public function update(WP_REST_Request $request): WP_REST_Response|WP_Error { return $this->save($request, (int) $request['id']); }
 
     public function delete(WP_REST_Request $request): WP_REST_Response|WP_Error
@@ -71,6 +72,31 @@ final class NodesController extends BaseController
         if ($ok === false) return new WP_Error('worldquest_db_error', __('Failed to persist node.', 'world-quest'), ['status' => 500]);
 
         return new WP_REST_Response($id === null ? ['id' => (int) $this->wpdb->insert_id] : ['updated' => true], $id === null ? 201 : 200);
+    }
+
+    private function savePublic(WP_REST_Request $request): WP_REST_Response|WP_Error
+    {
+        foreach ([$this->enforceHoneypot($request), $this->enforceRateLimit($request, 'node_create'), $this->verifyRecaptcha($request)] as $check) {
+            if ($check instanceof WP_Error) return $check;
+        }
+
+        $questId = (int) $request->get_param('quest_id');
+        $nodeCode = sanitize_text_field((string) $request->get_param('node_code'));
+        $content = wp_kses_post((string) $request->get_param('content'));
+        $sortOrder = (int) $request->get_param('sort_order');
+        if ($questId <= 0) return $this->validationError('quest_id', __('quest_id must be greater than 0.', 'world-quest'));
+        if ($nodeCode === '') return $this->validationError('node_code', __('node_code is required.', 'world-quest'));
+
+        $files = $request->get_file_params();
+        if (isset($files['attachment']) && is_array($files['attachment'])) {
+            $check = $this->validateUploadedFile($files['attachment']);
+            if ($check instanceof WP_Error) return $check;
+        }
+
+        $ok = $this->wpdb->insert($this->table, ['quest_id' => $questId, 'node_code' => $nodeCode, 'content' => $content, 'status' => 'pending_moderation', 'sort_order' => $sortOrder], ['%d', '%s', '%s', '%s', '%d']);
+        if ($ok === false) return new WP_Error('worldquest_db_error', __('Failed to persist node.', 'world-quest'), ['status' => 500]);
+
+        return new WP_REST_Response(['id' => (int) $this->wpdb->insert_id, 'status' => 'pending_moderation'], 201);
     }
 
     private function exists(int $id): bool

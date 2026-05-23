@@ -17,4 +17,14 @@
         <aside class="world-quest-media" data-node-media></aside>
     </div>
     <div class="world-quest-choices" data-node-choices></div>
+    <form class="world-quest-public-form" data-worldquest-public-node-form enctype="multipart/form-data">
+        <h3>Предложить новый узел</h3>
+        <input type="text" name="node_code" placeholder="Код узла" required>
+        <textarea name="content" placeholder="Текст узла" required></textarea>
+        <input type="file" name="attachment" accept=".jpg,.jpeg,.png,.gif,.webp">
+        <input type="text" name="website" value="" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;">
+        <input type="hidden" name="recaptcha_token" value="">
+        <button type="submit">Отправить на модерацию</button>
+        <p data-worldquest-form-message></p>
+    </form>
 </div>
