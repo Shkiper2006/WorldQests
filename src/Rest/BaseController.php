@@ -19,7 +19,7 @@ abstract class BaseController
 
     public function permissionDenied(): WP_Error
     {
-        return new WP_Error('worldquest_forbidden', __('You do not have permissions to perform this action.', 'world-quest'), ['status' => 403]);
+        return new WP_Error('worldquest_forbidden', __('You do not have permissions to perform this action.', 'worldquest'), ['status' => 403]);
     }
 
     protected function enforceNonce(WP_REST_Request $request): true|WP_Error
@@ -27,7 +27,7 @@ abstract class BaseController
         if (wp_doing_ajax() || is_admin()) {
             $nonce = (string) ($request->get_header('x_wp_nonce') ?: $request->get_param('_wpnonce'));
             if ($nonce === '' || !wp_verify_nonce($nonce, 'wp_rest')) {
-                return new WP_Error('worldquest_invalid_nonce', __('Invalid security token.', 'world-quest'), ['status' => 403]);
+                return new WP_Error('worldquest_invalid_nonce', __('Invalid security token.', 'worldquest'), ['status' => 403]);
             }
         }
 
@@ -42,7 +42,7 @@ abstract class BaseController
     protected function enforceHoneypot(WP_REST_Request $request, string $field = 'website'): true|WP_Error
     {
         if (trim((string) $request->get_param($field)) !== '') {
-            return new WP_Error('worldquest_spam_detected', __('Spam detected.', 'world-quest'), ['status' => 400]);
+            return new WP_Error('worldquest_spam_detected', __('Spam detected.', 'worldquest'), ['status' => 400]);
         }
 
         return true;
@@ -55,7 +55,7 @@ abstract class BaseController
         $key = 'wq_rl_' . md5($action . '|' . $ip . '|' . $token);
         $count = (int) get_transient($key);
         if ($count >= self::PUBLIC_RATE_LIMIT) {
-            return new WP_Error('worldquest_rate_limited', __('Too many requests. Please try again later.', 'world-quest'), ['status' => 429]);
+            return new WP_Error('worldquest_rate_limited', __('Too many requests. Please try again later.', 'worldquest'), ['status' => 429]);
         }
 
         set_transient($key, $count + 1, self::PUBLIC_RATE_WINDOW);
@@ -72,7 +72,7 @@ abstract class BaseController
 
         $token = (string) $request->get_param('recaptcha_token');
         if ($token === '') {
-            return new WP_Error('worldquest_recaptcha_required', __('reCAPTCHA token is required.', 'world-quest'), ['status' => 400]);
+            return new WP_Error('worldquest_recaptcha_required', __('reCAPTCHA token is required.', 'worldquest'), ['status' => 400]);
         }
 
         $response = wp_remote_post('https://www.google.com/recaptcha/api/siteverify', [
@@ -84,12 +84,12 @@ abstract class BaseController
             ],
         ]);
         if (is_wp_error($response)) {
-            return new WP_Error('worldquest_recaptcha_unavailable', __('reCAPTCHA verification failed.', 'world-quest'), ['status' => 503]);
+            return new WP_Error('worldquest_recaptcha_unavailable', __('reCAPTCHA verification failed.', 'worldquest'), ['status' => 503]);
         }
 
         $body = json_decode((string) wp_remote_retrieve_body($response), true);
         if (!is_array($body) || empty($body['success'])) {
-            return new WP_Error('worldquest_recaptcha_invalid', __('reCAPTCHA validation failed.', 'world-quest'), ['status' => 400]);
+            return new WP_Error('worldquest_recaptcha_invalid', __('reCAPTCHA validation failed.', 'worldquest'), ['status' => 400]);
         }
 
         return true;
@@ -106,7 +106,7 @@ abstract class BaseController
 
         $check = wp_check_filetype_and_ext((string) ($file['tmp_name'] ?? ''), (string) ($file['name'] ?? ''), $allowed);
         if (empty($check['ext']) || empty($check['type'])) {
-            return new WP_Error('worldquest_invalid_upload', __('Invalid file type.', 'world-quest'), ['status' => 400]);
+            return new WP_Error('worldquest_invalid_upload', __('Invalid file type.', 'worldquest'), ['status' => 400]);
         }
 
         return true;
@@ -119,6 +119,6 @@ abstract class BaseController
 
     protected function notFound(string $entity, int $id): WP_Error
     {
-        return new WP_Error('worldquest_not_found', sprintf(__('%s with ID %d was not found.', 'world-quest'), $entity, $id), ['status' => 404]);
+        return new WP_Error('worldquest_not_found', sprintf(__('%s with ID %d was not found.', 'worldquest'), $entity, $id), ['status' => 404]);
     }
 }

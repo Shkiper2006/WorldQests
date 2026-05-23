@@ -34,11 +34,11 @@ final class QuestsController extends BaseController
         $status = sanitize_key((string) ($request->get_param('status') ?: 'draft'));
         $slug = sanitize_title((string) ($request->get_param('slug') ?: $title));
 
-        if ($title === '') return $this->validationError('title', __('Title is required.', 'world-quest'));
-        if (!$this->validateStatus($status)) return $this->validationError('status', __('Invalid status.', 'world-quest'));
+        if ($title === '') return $this->validationError('title', __('Title is required.', 'worldquest'));
+        if (!$this->validateStatus($status)) return $this->validationError('status', __('Invalid status.', 'worldquest'));
 
         $ok = $this->wpdb->insert($this->table, ['title' => $title, 'slug' => $slug, 'status' => $status], ['%s', '%s', '%s']);
-        if ($ok === false) return new WP_Error('worldquest_db_error', __('Failed to create quest.', 'world-quest'), ['status' => 500]);
+        if ($ok === false) return new WP_Error('worldquest_db_error', __('Failed to create quest.', 'worldquest'), ['status' => 500]);
 
         return new WP_REST_Response(['id' => (int) $this->wpdb->insert_id], 201);
     }
@@ -51,10 +51,10 @@ final class QuestsController extends BaseController
 
         $title = sanitize_text_field((string) $request->get_param('title'));
         $slug = sanitize_title((string) ($request->get_param('slug') ?: $title));
-        if ($title === '') return $this->validationError('title', __('Title is required.', 'world-quest'));
+        if ($title === '') return $this->validationError('title', __('Title is required.', 'worldquest'));
 
         $ok = $this->wpdb->insert($this->table, ['title' => $title, 'slug' => $slug, 'status' => 'pending_moderation'], ['%s', '%s', '%s']);
-        if ($ok === false) return new WP_Error('worldquest_db_error', __('Failed to create quest.', 'world-quest'), ['status' => 500]);
+        if ($ok === false) return new WP_Error('worldquest_db_error', __('Failed to create quest.', 'worldquest'), ['status' => 500]);
         return new WP_REST_Response(['id' => (int) $this->wpdb->insert_id, 'status' => 'pending_moderation'], 201);
     }
 
@@ -68,11 +68,11 @@ final class QuestsController extends BaseController
         $title = sanitize_text_field((string) $request->get_param('title'));
         $status = sanitize_key((string) ($request->get_param('status') ?: 'draft'));
         $slug = sanitize_title((string) ($request->get_param('slug') ?: $title));
-        if ($title === '') return $this->validationError('title', __('Title is required.', 'world-quest'));
-        if (!$this->validateStatus($status)) return $this->validationError('status', __('Invalid status.', 'world-quest'));
+        if ($title === '') return $this->validationError('title', __('Title is required.', 'worldquest'));
+        if (!$this->validateStatus($status)) return $this->validationError('status', __('Invalid status.', 'worldquest'));
 
         $ok = $this->wpdb->update($this->table, ['title' => $title, 'slug' => $slug, 'status' => $status], ['id' => $id], ['%s', '%s', '%s'], ['%d']);
-        if ($ok === false) return new WP_Error('worldquest_db_error', __('Failed to update quest.', 'world-quest'), ['status' => 500]);
+        if ($ok === false) return new WP_Error('worldquest_db_error', __('Failed to update quest.', 'worldquest'), ['status' => 500]);
 
         return new WP_REST_Response(['updated' => true]);
     }
@@ -85,7 +85,7 @@ final class QuestsController extends BaseController
         if (!$this->exists($id)) return $this->notFound('Quest', $id);
 
         $ok = $this->wpdb->delete($this->table, ['id' => $id], ['%d']);
-        if ($ok === false) return new WP_Error('worldquest_db_error', __('Failed to delete quest.', 'world-quest'), ['status' => 500]);
+        if ($ok === false) return new WP_Error('worldquest_db_error', __('Failed to delete quest.', 'worldquest'), ['status' => 500]);
 
         return new WP_REST_Response(['deleted' => true]);
     }
