@@ -33,6 +33,11 @@ final class Menu
             'sanitize_callback' => [$this, 'sanitizeAppearanceSettings'],
             'default' => [],
         ]);
+        register_setting('world_quest_security', 'world_quest_security', [
+            'type' => 'array',
+            'sanitize_callback' => [$this, 'sanitizeSecuritySettings'],
+            'default' => [],
+        ]);
 
         add_settings_section('world_quest_appearance_section', 'Внешний вид', static fn() => null, 'world-quest-settings');
 
@@ -48,6 +53,19 @@ final class Menu
         foreach ($fields as $key => $label) {
             add_settings_field($key, $label, [$this, 'renderAppearanceField'], 'world-quest-settings', 'world_quest_appearance_section', ['key' => $key]);
         }
+
+        add_settings_section('world_quest_security_section', 'Безопасность', static fn() => null, 'world-quest-settings');
+        add_settings_field('recaptcha_site_key', 'reCAPTCHA site key', [$this, 'renderSecurityField'], 'world-quest-settings', 'world_quest_security_section', ['key' => 'recaptcha_site_key']);
+        add_settings_field('recaptcha_secret', 'reCAPTCHA secret', [$this, 'renderSecurityField'], 'world-quest-settings', 'world_quest_security_section', ['key' => 'recaptcha_secret']);
+    }
+
+    public function sanitizeSecuritySettings(mixed $input): array
+    {
+        $input = is_array($input) ? $input : [];
+        return [
+            'recaptcha_site_key' => sanitize_text_field((string) ($input['recaptcha_site_key'] ?? '')),
+            'recaptcha_secret' => sanitize_text_field((string) ($input['recaptcha_secret'] ?? '')),
+        ];
     }
 
     public function sanitizeAppearanceSettings(mixed $input): array
@@ -70,6 +88,14 @@ final class Menu
         $options = get_option('world_quest_appearance', []);
         $value = esc_attr((string) ($options[$key] ?? ''));
         echo "<input type='text' class='regular-text' name='world_quest_appearance[{$key}]' value='{$value}' />";
+    }
+
+    public function renderSecurityField(array $args): void
+    {
+        $key = (string) ($args['key'] ?? '');
+        $options = get_option('world_quest_security', []);
+        $value = esc_attr((string) ($options[$key] ?? ''));
+        echo "<input type='text' class='regular-text' name='world_quest_security[{$key}]' value='{$value}' />";
     }
 
     public function renderQuestsPage(): void
@@ -128,8 +154,9 @@ final class Menu
 
     public function renderSettingsPage(): void
     {
-        echo '<div class="wrap"><h1>Настройки внешнего вида</h1><form method="post" action="options.php">';
+        echo '<div class="wrap"><h1>Настройки плагина</h1><form method="post" action="options.php">';
         settings_fields('world_quest_appearance');
+        settings_fields('world_quest_security');
         do_settings_sections('world-quest-settings');
         submit_button('Сохранить');
         echo '</form></div>';

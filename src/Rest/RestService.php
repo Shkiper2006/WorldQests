@@ -49,6 +49,14 @@ final class RestService
             ],
         ]);
 
+        register_rest_route('worldquest/v1', '/public/quests', [
+            [
+                'methods' => 'POST',
+                'callback' => [$this->quests, 'createPublic'],
+                'permission_callback' => '__return_true',
+            ],
+        ]);
+
         register_rest_route('worldquest/v1', '/quests/(?P<id>\d+)', [
             [
                 'methods' => ['PUT', 'PATCH'],
@@ -72,6 +80,14 @@ final class RestService
                 'methods' => 'POST',
                 'callback' => [$this->nodes, 'create'],
                 'permission_callback' => fn () => $this->nodes->canManage() ?: $this->nodes->permissionDenied(),
+            ],
+        ]);
+
+        register_rest_route('worldquest/v1', '/public/nodes', [
+            [
+                'methods' => 'POST',
+                'callback' => [$this->nodes, 'createPublic'],
+                'permission_callback' => '__return_true',
             ],
         ]);
 

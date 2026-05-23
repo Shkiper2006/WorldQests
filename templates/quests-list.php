@@ -29,6 +29,14 @@
             </article>
         <?php endforeach; ?>
     </div>
+    <form data-worldquest-public-quest-form>
+        <h3>Предложить новый квест</h3>
+        <input type="text" name="title" placeholder="Название квеста" required>
+        <input type="text" name="website" value="" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;">
+        <input type="hidden" name="recaptcha_token" value="">
+        <button type="submit">Отправить</button>
+        <p data-worldquest-quest-message></p>
+    </form>
 </div>
 <script>
 (() => {
@@ -42,5 +50,14 @@ const apply = () => {
  list.innerHTML=''; filtered.forEach((el)=>list.appendChild(el));
 };
 [search,status,sort].forEach((el)=>el.addEventListener('input', apply));
+const form = root.querySelector('[data-worldquest-public-quest-form]');
+if (form) {
+ form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const fd = new FormData(form);
+  const req = await fetch('<?php echo esc_url_raw(rest_url('worldquest/v1/public/quests')); ?>', { method: 'POST', body: fd });
+  root.querySelector('[data-worldquest-quest-message]').textContent = req.ok ? 'Отправлено на модерацию.' : 'Ошибка отправки.';
+ });
+}
 })();
 </script>
