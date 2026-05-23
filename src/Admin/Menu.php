@@ -13,8 +13,8 @@ final class Menu
 
     public function __construct(private readonly string $pluginFile, private readonly wpdb $wpdb)
     {
-        $this->questsTable = $this->wpdb->prefix . 'wq_quests';
-        $this->nodesTable = $this->wpdb->prefix . 'wq_nodes';
+        $this->questsTable = $this->wpdb->prefix . 'world_quests';
+        $this->nodesTable = $this->wpdb->prefix . 'world_quest_nodes';
     }
 
     public function register(): void
