@@ -132,7 +132,7 @@ final class RestService
 
         return new WP_REST_Response([
             'status' => 'ok',
-            'plugin' => 'world-quest',
+            'plugin' => 'worldquest',
         ]);
     }
 }
