@@ -9,7 +9,10 @@
   "autoload": {
     "psr-4": {
       "WorldQuest\\": "src/"
-    }
+    },
+    "classmap": [
+      "migrations/"
+    ]
   },
   "scripts": {
     "autoload": "composer dump-autoload"
