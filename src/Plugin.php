@@ -16,9 +16,6 @@ final class Plugin
         private ?FrontendService $frontendService = null,
         private ?RestService $restService = null,
     ) {
-        $this->adminService = $adminService ?? new AdminService($pluginFile);
-        $this->frontendService = $frontendService ?? new FrontendService($pluginFile);
-        $this->restService = $restService ?? new RestService();
     }
 
     public function boot(): void
@@ -32,32 +29,31 @@ final class Plugin
 
     public function onInit(): void
     {
-        load_plugin_textdomain(
-            'world-quest',
-            false,
-            dirname(plugin_basename($this->pluginFile)) . '/languages'
-        );
-
-        $this->frontendService?->register();
+        $this->frontendService ??= new FrontendService($this->pluginFile);
+        $this->frontendService->register();
     }
 
     public function onRestApiInit(): void
     {
-        $this->restService?->registerRoutes();
+        $this->restService ??= new RestService();
+        $this->restService->registerRoutes();
     }
 
     public function onAdminMenu(): void
     {
-        $this->adminService?->registerMenu();
+        $this->adminService ??= new AdminService($this->pluginFile);
+        $this->adminService->registerMenu();
     }
 
     public function onAdminInit(): void
     {
-        $this->adminService?->registerSettings();
+        $this->adminService ??= new AdminService($this->pluginFile);
+        $this->adminService->registerSettings();
     }
 
     public function onEnqueueBlockEditorAssets(): void
     {
-        $this->adminService?->enqueueBlockEditorAssets();
+        $this->adminService ??= new AdminService($this->pluginFile);
+        $this->adminService->enqueueBlockEditorAssets();
     }
 }

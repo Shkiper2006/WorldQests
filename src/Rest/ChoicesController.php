@@ -28,7 +28,7 @@ final class ChoicesController extends BaseController
         $id = (int) $request['id'];
         if (!$this->exists($id)) return $this->notFound('Choice', $id);
         $ok = $this->wpdb->delete($this->table, ['id' => $id], ['%d']);
-        if ($ok === false) return new WP_Error('worldquest_db_error', __('Failed to delete choice.', 'world-quest'), ['status' => 500]);
+        if ($ok === false) return new WP_Error('worldquest_db_error', __('Failed to delete choice.', 'worldquest'), ['status' => 500]);
         return new WP_REST_Response(['deleted' => true]);
     }
 
@@ -45,11 +45,11 @@ final class ChoicesController extends BaseController
         $status = sanitize_key((string) ($request->get_param('status') ?: 'draft'));
         $sortOrder = (int) $request->get_param('sort_order');
 
-        if ($questId <= 0) return $this->validationError('quest_id', __('quest_id must be greater than 0.', 'world-quest'));
-        if ($parentNodeId <= 0) return $this->validationError('parent_node_id', __('parent_node_id must be greater than 0.', 'world-quest'));
-        if ($targetNodeCode === '') return $this->validationError('target_node_code', __('target_node_code is required.', 'world-quest'));
-        if ($label === '') return $this->validationError('label', __('label is required.', 'world-quest'));
-        if (!$this->validateStatus($status)) return $this->validationError('status', __('Invalid status.', 'world-quest'));
+        if ($questId <= 0) return $this->validationError('quest_id', __('quest_id must be greater than 0.', 'worldquest'));
+        if ($parentNodeId <= 0) return $this->validationError('parent_node_id', __('parent_node_id must be greater than 0.', 'worldquest'));
+        if ($targetNodeCode === '') return $this->validationError('target_node_code', __('target_node_code is required.', 'worldquest'));
+        if ($label === '') return $this->validationError('label', __('label is required.', 'worldquest'));
+        if (!$this->validateStatus($status)) return $this->validationError('status', __('Invalid status.', 'worldquest'));
 
         $data = ['quest_id' => $questId, 'parent_node_id' => $parentNodeId, 'target_node_code' => $targetNodeCode, 'label' => $label, 'status' => $status, 'sort_order' => $sortOrder];
         $formats = ['%d', '%d', '%s', '%s', '%s', '%d'];
@@ -58,7 +58,7 @@ final class ChoicesController extends BaseController
             ? $this->wpdb->insert($this->table, $data, $formats)
             : $this->wpdb->update($this->table, $data, ['id' => $id], $formats, ['%d']);
 
-        if ($ok === false) return new WP_Error('worldquest_db_error', __('Failed to persist choice.', 'world-quest'), ['status' => 500]);
+        if ($ok === false) return new WP_Error('worldquest_db_error', __('Failed to persist choice.', 'worldquest'), ['status' => 500]);
 
         return new WP_REST_Response($id === null ? ['id' => (int) $this->wpdb->insert_id] : ['updated' => true], $id === null ? 201 : 200);
     }

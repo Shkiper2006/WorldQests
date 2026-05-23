@@ -1,0 +1,16 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: World Quest 0.1.0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: blocks/world-quests-list/block.json
+msgid "World Quests List"
+msgstr ""
+
+#: blocks/world-quest-viewer/block.json
+msgid "World Quest Viewer"
+msgstr ""

@@ -13,17 +13,17 @@ final class Menu
 
     public function __construct(private readonly string $pluginFile, private readonly wpdb $wpdb)
     {
-        $this->questsTable = $this->wpdb->prefix . 'wq_quests';
-        $this->nodesTable = $this->wpdb->prefix . 'wq_nodes';
+        $this->questsTable = $this->wpdb->prefix . 'world_quests';
+        $this->nodesTable = $this->wpdb->prefix . 'world_quest_nodes';
     }
 
     public function register(): void
     {
-        add_menu_page('Мировой квест', 'Мировой квест', 'manage_options', 'world-quest', [$this, 'renderQuestsPage'], 'dashicons-location-alt', 56);
-        add_submenu_page('world-quest', 'Квесты', 'Квесты', 'manage_options', 'world-quest', [$this, 'renderQuestsPage']);
-        add_submenu_page('world-quest', 'Узлы', 'Узлы', 'manage_options', 'world-quest-nodes', [$this, 'renderNodesPage']);
-        add_submenu_page('world-quest', 'Модерация', 'Модерация', 'manage_options', 'world-quest-moderation', [$this, 'renderModerationPage']);
-        add_submenu_page('world-quest', 'Настройки', 'Настройки', 'manage_options', 'world-quest-settings', [$this, 'renderSettingsPage']);
+        add_menu_page('Мировой квест', 'Мировой квест', 'manage_options', 'worldquest', [$this, 'renderQuestsPage'], 'dashicons-location-alt', 56);
+        add_submenu_page('worldquest', 'Квесты', 'Квесты', 'manage_options', 'worldquest', [$this, 'renderQuestsPage']);
+        add_submenu_page('worldquest', 'Узлы', 'Узлы', 'manage_options', 'world-quest-nodes', [$this, 'renderNodesPage']);
+        add_submenu_page('worldquest', 'Модерация', 'Модерация', 'manage_options', 'world-quest-moderation', [$this, 'renderModerationPage']);
+        add_submenu_page('worldquest', 'Настройки', 'Настройки', 'manage_options', 'world-quest-settings', [$this, 'renderSettingsPage']);
     }
 
     public function registerSettings(): void
@@ -108,8 +108,8 @@ final class Menu
         foreach ($quests as $quest) {
             $id = (int) $quest['id'];
             echo '<tr><td>' . $id . '</td><td>' . esc_html($quest['title']) . '</td><td>' . esc_html($quest['status']) . '</td><td>'
-                . '<a href="' . esc_url(add_query_arg(['page' => 'world-quest', 'edit' => $id], admin_url('admin.php'))) . '">Ред.</a> | '
-                . '<a href="' . esc_url(wp_nonce_url(add_query_arg(['page' => 'world-quest', 'delete' => $id], admin_url('admin.php')), 'wq_delete_quest_' . $id)) . '">Удалить</a></td></tr>';
+                . '<a href="' . esc_url(add_query_arg(['page' => 'worldquest', 'edit' => $id], admin_url('admin.php'))) . '">Ред.</a> | '
+                . '<a href="' . esc_url(wp_nonce_url(add_query_arg(['page' => 'worldquest', 'delete' => $id], admin_url('admin.php')), 'wq_delete_quest_' . $id)) . '">Удалить</a></td></tr>';
         }
         echo '</tbody></table></div>';
     }
