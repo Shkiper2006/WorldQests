@@ -9,16 +9,16 @@
         .world-quests-list .item { border:1px solid #ddd; border-radius:8px; padding:12px; }
     </style>
     <div class="toolbar">
-        <input type="search" data-search placeholder="<?php echo esc_attr__('Search quests…', 'world-quest'); ?>" />
+        <input type="search" data-search placeholder="<?php echo esc_attr__('Search quests…', 'worldquest'); ?>" />
         <select data-status>
-            <option value=""><?php echo esc_html__('All statuses', 'world-quest'); ?></option>
-            <option value="published"><?php echo esc_html__('Published', 'world-quest'); ?></option>
-            <option value="draft"><?php echo esc_html__('Draft', 'world-quest'); ?></option>
+            <option value=""><?php echo esc_html__('All statuses', 'worldquest'); ?></option>
+            <option value="published"><?php echo esc_html__('Published', 'worldquest'); ?></option>
+            <option value="draft"><?php echo esc_html__('Draft', 'worldquest'); ?></option>
         </select>
         <select data-sort>
-            <option value="desc"><?php echo esc_html__('Newest first', 'world-quest'); ?></option>
-            <option value="asc"><?php echo esc_html__('Oldest first', 'world-quest'); ?></option>
-            <option value="title"><?php echo esc_html__('Title A-Z', 'world-quest'); ?></option>
+            <option value="desc"><?php echo esc_html__('Newest first', 'worldquest'); ?></option>
+            <option value="asc"><?php echo esc_html__('Oldest first', 'worldquest'); ?></option>
+            <option value="title"><?php echo esc_html__('Title A-Z', 'worldquest'); ?></option>
         </select>
     </div>
     <div class="items" data-items>
