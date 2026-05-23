@@ -16,6 +16,27 @@ defined('ABSPATH') || exit;
 $autoloadPath = __DIR__ . '/vendor/autoload.php';
 if (file_exists($autoloadPath)) {
     require_once $autoloadPath;
+} else {
+    spl_autoload_register(static function (string $class): void {
+        $prefix = 'WorldQuest\\';
+        if (strncmp($class, $prefix, strlen($prefix)) !== 0) {
+            return;
+        }
+
+        $relative = substr($class, strlen($prefix));
+        $path = __DIR__ . '/src/' . str_replace('\\', '/', $relative) . '.php';
+        if (file_exists($path)) {
+            require_once $path;
+            return;
+        }
+
+        if ($class === 'WorldQuest\\Migrations\\Installer') {
+            $migrationPath = __DIR__ . '/migrations/Installer.php';
+            if (file_exists($migrationPath)) {
+                require_once $migrationPath;
+            }
+        }
+    });
 }
 
 if (!class_exists(WorldQuest\Plugin::class)) {
