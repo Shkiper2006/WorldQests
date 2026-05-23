@@ -32,12 +32,6 @@ final class Plugin
 
     public function onInit(): void
     {
-        load_plugin_textdomain(
-            'world-quest',
-            false,
-            dirname(plugin_basename($this->pluginFile)) . '/languages'
-        );
-
         $this->frontendService?->register();
     }
 

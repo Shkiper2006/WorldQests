@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "worldquest/world-quests-list",
+  "version": "0.1.0",
+  "title": "World Quests List",
+  "category": "widgets",
+  "icon": "list-view",
+  "description": "Displays the published world quests list.",
+  "textdomain": "worldquest",
+  "editorScript": "worldquest-blocks"
+}
